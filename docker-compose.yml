@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml-engine/model.pkl:/app/ml-engine/model.pkl:ro
+      - ./api/alerts.db:/app/api/alerts.db
+    networks:
+      - sentinel-net
+
+  collector:
+    build:
+      context: .
+      dockerfile: collector/Dockerfile
+    depends_on:
+      - api
+    networks:
+      - sentinel-net
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dashboards/Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    networks:
+      - sentinel-net
+
+networks:
+  sentinel-net:
+    driver: bridge

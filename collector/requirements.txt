@@ -2,3 +2,4 @@ scapy
 requests
 numpy
 pydantic
+psutil
